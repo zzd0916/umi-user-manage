@@ -1,0 +1,39 @@
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background: url('~@/assets/images/login_bg.jpeg') no-repeat;
+    background-size: cover;
+    .login-lang {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 46px;
+        line-height: 46px;
+        background: #fff;
+        text-align: right;
+        padding: 0 20px;
+        .lang-label {
+            margin-right: 10px;
+        }
+    }
+    .login-box {
+        width: 300px;
+        transform: translateY(-20%);
+        .login-form {
+            border-radius: 10px;
+            background-color: hsla(0,0%,100%,.56);
+            margin: 0;
+        }
+        .ant-form {
+            padding: 20px;
+            box-sizing: border-box;
+            .login-form-button {
+                width: 100%;
+            }
+        }
+    }
+}
