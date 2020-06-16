@@ -32,23 +32,25 @@ function getCookie(name: string) : string {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
-  if (response && response.status) {
-    const errorText = codeMessage[response.status] || response.statusText;
-    const { status, url } = response;
-
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
-  } else if (!response) {
-    notification.error({
-      description: '您的网络发生异常，无法连接服务器',
-      message: '网络异常',
-    });
+const errorHandler = (error: any)  => {
+  const { response } = error
+  if( response ) {
+    const { status, url } = response
+    console.log(status,"status")
+    if( status > 400 ) {
+      notification.error({
+        message: error.data.message ? error.data.message : error.data,
+        description: `${url}`,
+      });
+    } else {
+      notification.error({
+        message: `Network Error!`,
+        description: error.data.message ? error.data.message : error.data ,
+      });
+    }
   }
-  return response;
+    
+  throw error; // If throw. The error will continue to be thrown. // 可用于 catch 回调
 };
 
 /**
@@ -75,16 +77,25 @@ http.interceptors.request.use((url, options: RequestOptionsInit) => {
 
 // response拦截器, 处理response
 http.interceptors.response.use(async response => {
+  // console.log('response拦截器')
  const data = await response.clone().json()
-  if(data.state === 1){
+  if(response.status === 200){
+    if(data.state !== 1) {
+      notification.error({
+        message: '操作失败',
+        description: data.msg,
+        duration: 2,
+      });
+      return false
+    }
     return  response;
   }else{
     notification.error({
       description: data.msg || '您的网络发生异常，无法连接服务器',
       message: data.msg,
     });
-    return  response;
   }
+  return  response;
 
 });
 

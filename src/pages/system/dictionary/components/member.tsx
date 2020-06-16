@@ -1,24 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, FC } from 'react'
 import { Table, Button, Popconfirm, message, Modal } from 'antd';
-import { MemberModelState, ConnectRC, Loading, connect } from 'umi';
+import { MemberModelState, ConnectRC, Loading, connect, Dispatch } from 'umi';
 
 // interface IProps {
 //     columns: Array<object>;
 //     data: Array<object>;
 // }
+interface SingMemberType {
+    _id: string
+}
 
-// interface PageProps {
-//     dictionaryMember: MemberModelState;
-//     loading: boolean;
-//     dispatch: Function;
-// }
+interface PageProps {
+    dictionaryMember: MemberModelState;
+    loading: boolean;
+    dispatch: Dispatch;
+}
 
 
-const  Member = ({ dispatch, dictionaryMember }) => {
+const  Member:FC<PageProps> = ({ dispatch, dictionaryMember }) => {
     const [modalVisible, setModalVisible] = useState(false)
 
     
-    const del = (item) => {
+    const del = (item:SingMemberType) => {
         console.log('delete', item._id)
     }
 
@@ -37,7 +40,7 @@ const  Member = ({ dispatch, dictionaryMember }) => {
 
     const { list } = dictionaryMember;
 
-    const columns: Array<IColumns> = [
+    const columns = [
         {
             title: '名称',
             dataIndex: 'name',
@@ -61,7 +64,7 @@ const  Member = ({ dispatch, dictionaryMember }) => {
         },
         {
             title: '操作',
-            render: (item: object) => (
+            render: (item: SingMemberType) => (
                 <span>
                     <Popconfirm
                         placement="top"
