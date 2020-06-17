@@ -1,6 +1,6 @@
 
 export const setLogin = (data: object) => {
-    localStorage.setItem('login_data', JSON.stringify(data))
+    localStorage.setItem('AdminLoginData', JSON.stringify(data))
     localStorage.setItem('isLogin', "true")
 }
 
@@ -9,10 +9,10 @@ export const isLogin = (): boolean => {
 }
 
 export const getLoginInfo = (): object => {
-    return JSON.parse(localStorage.get('login_data')) || {}
+    return JSON.parse(localStorage.get('AdminLoginData')) || {}
 }
 
 export const logOut = () => {
-    localStorage.setItem('login_data', '')
+    localStorage.setItem('AdminLoginData', '')
     localStorage.setItem('isLogin', "false")
 }

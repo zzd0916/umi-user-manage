@@ -14,6 +14,13 @@ export default defineConfig({
   },
   autoprefixer: {
     flexbox: 'no-2009'
+  },
+  locale: {
+    default: 'zh_CN',
+    antd: false,
+    title: false,
+    baseNavigator: true,
+    baseSeparator: '_',
   }
   // antd: {
   //   dark: true

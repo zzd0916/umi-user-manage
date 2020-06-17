@@ -44,7 +44,7 @@ const MemberModel: MemberModelType = {
   },
   effects: {
     *getList({ payload: { p = 1 , mark="memberSource" } }, { call, put }) {
-        console.log('effect getList')
+        // console.log('effect getList')
         const { list, count } = yield call(dictionaryService.getList, { p, mark });
         console.log( list , count )
         yield put({
@@ -64,7 +64,7 @@ const MemberModel: MemberModelType = {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-          console.log('pathname', pathname)
+          // console.log('pathname', pathname)
         if (pathname === '/system/dictionary') {
           dispatch({
             type: 'getList',

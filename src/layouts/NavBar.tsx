@@ -1,53 +1,104 @@
 import React from 'react'
 import { Menu } from 'antd'
 import { Link } from 'umi'
+import { menuData } from './menudata'
 import {
     HomeOutlined,
-    MailOutlined,
-    SettingOutlined,
-    BarChartOutlined,
-    AppstoreAddOutlined,
-    DotChartOutlined
+    UserSwitchOutlined,
+    UnorderedListOutlined,
+    ShopOutlined,
+    ApartmentOutlined,
+    DotChartOutlined,
+    BookOutlined,
+    UsergroupAddOutlined,
+    SolutionOutlined,
+    SettingOutlined
 } from '@ant-design/icons';
 
 const { SubMenu } = Menu
 
-const NavBar = () => {
+const iconData = {
+    'HomeOutlined': <HomeOutlined />,
+    'UserSwitchOutlined': <UserSwitchOutlined />,
+    'UsergroupAddOutlined': <UsergroupAddOutlined />,
+    'ApartmentOutlined': <ApartmentOutlined />,
+    'ShopOutlined': <ShopOutlined />,
+    'UnorderedListOutlined': <UnorderedListOutlined />,
+    'SolutionOutlined': <SolutionOutlined />,
+    'SettingOutlined': <SettingOutlined />,
+    'BookOutlined': <BookOutlined />,
+}
+
+const getMenuKeyFromUrl = (pathname) => {
+    let selmenu = pathname === '/' ? ['home'] : [pathname.substr(1)];
+    pathname = pathname.split('/');
+    if (pathname.length > 1)
+        selmenu.push(pathname[1]);
+    //console.log('pathname',pathname,selmenu);
+    return selmenu;//pathname.substr(1);
+}
+
+const getOpenKey = (selkey, menuMain) => {
+    for (let key in menuMain) {
+        let menu = menuMain[key];
+        if (menu === selkey && !menu.children) return selkey;
+        if (menu.children) {
+            for (let m in menu.children) {
+                let c = menu.children[m];
+                if (c.key === selkey)
+                    return c.parent;
+            }
+        }
+    }
+    return null;
+}
+
+const getLngMenuText = (text, locale = 'zh_CN') => {
+    if (typeof text !== 'object') return text;
+    return text[locale];
+}
+
+const renderMenu = (locale) => {
+    console.log("locale", locale)
+    var menus = [];
+    for (let key in menuData) {
+        let menu = menuData[key];
+        if (menu.children && menu.children.length) {
+            menus.push(
+                <SubMenu key={menu.key} icon={iconData[menu.icon]} title={menu.text}>
+                    {
+                        menu.children.map(c1 => {
+                            return <Menu.Item key={c1.key}><Link to={c1.to}>{c1.text}</Link></Menu.Item>
+                        })
+                    }
+                </SubMenu>
+            )
+        } else {
+            menus.push(
+                <Menu.Item key={menu.key} icon={iconData[menu.icon]}>
+                    <Link to={menu.to}>{getLngMenuText(menu.text, locale)}</Link>
+                </Menu.Item>
+            )
+        }
+    }
+    return menus
+}
+
+
+const NavBar = ({ loading, pathname, locale }) => {
+
+    const selectedKey = getMenuKeyFromUrl(pathname);
+    const openKeys = getOpenKey(selectedKey[0], menuData);
 
     return (
         <>
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                <Menu.Item key="1" icon={<HomeOutlined />}>
-                    <Link to="/">系统首页</Link>
-                </Menu.Item>
-                <SubMenu key="system" icon={<SettingOutlined />} title="系统管理">
-                    <Menu.Item key="system-param"><Link to="/system/param">参数设置</Link></Menu.Item>
-                    <Menu.Item key="system-dictionary"><Link to="/system/dictionary">字典管理</Link></Menu.Item>
-                    <Menu.Item key="system-role"><Link to="/system/role">角色管理</Link></Menu.Item>
-                    <Menu.Item key="system-user"><Link to="/system/user">用户管理</Link></Menu.Item>
-                </SubMenu>
-                <SubMenu key="opear" icon={<BarChartOutlined />} title="运营管理">
-                    <Menu.Item key="5">商户管理</Menu.Item>
-                    <SubMenu key="sub2" icon={<MailOutlined />} title="终端管理">
-                        <Menu.Item key="5">终端管理</Menu.Item>
-                        <Menu.Item key="5">活动记录</Menu.Item>
-                    </SubMenu>
-                    <Menu.Item key="7">检测用户管理</Menu.Item>
-                    <Menu.Item key="8">产品服务管理</Menu.Item>
-                    <Menu.Item key="8">收支管理</Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub3" icon={<DotChartOutlined />} title="数据分析">
-                    <Menu.Item key="5">检测记录</Menu.Item>
-                    <Menu.Item key="6">报告查询</Menu.Item>
-                    <Menu.Item key="7">多动作记录</Menu.Item>
-                    <Menu.Item key="8">多动作报告</Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub1" icon={<AppstoreAddOutlined />} title="开发管理">
-                    <Menu.Item key="5">健康参数配置</Menu.Item>
-                    <Menu.Item key="6">动作算法</Menu.Item>
-                    <Menu.Item key="7">版本管理</Menu.Item>
-                    <Menu.Item key="8">检测分析</Menu.Item>
-                </SubMenu>
+            <Menu
+                theme="dark"
+                mode="inline"
+                selectedKeys={selectedKey}
+                defaultOpenKeys={[openKeys]}
+            >
+                {renderMenu(locale)}
             </Menu>
         </>
     )
